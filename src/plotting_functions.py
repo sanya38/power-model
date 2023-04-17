@@ -19,6 +19,8 @@ if os.getcwd().split('\\')[-1] == 'src':
     os.chdir('..')
     print("Changed directory to root of project")
 
+#ignore warning for The default value of numeric_only in DataFrameGroupBy.sum is deprecated. In a future version, numeric_only will default to False. Either specify numeric_only or select only columns which should be valid for the function.
+warnings.filterwarnings("ignore", message="The default value of numeric_only in DataFrameGroupBy.sum is deprecated. In a future version, numeric_only will default to False. Either specify numeric_only or select only columns which should be valid for the function.")
 
 #load in technology, emissions and colors mappings from excel file, using the sheet name as the key
 mapping = pd.read_excel('config/plotting_config_and_timeslices.xlsx', sheet_name=None)
@@ -287,7 +289,7 @@ def plot_average_generation_by_timeslice(tall_results_dfs, paths_dict):
         df =  generation.copy()
         df = df[(df['YEAR'] == year) & (df['TECHNOLOGY'] != 'Demand')]
 
-        fig = px.bar(df, x="TIMESLICE", y="VALUE", color='TECHNOLOGY', title=title,color_discrete_map=color_dict, barmode='stack', category_orders={"TIMESLICE": order})
+        fig = px.bar(df, x="TIMESLICE", y="VALUE", color='TECHNOLOGY', title=title,color_discrete_map=color_dict, barmode='relative', category_orders={"TIMESLICE": order})
 
         demand = generation.copy()
         demand = demand[(demand['TECHNOLOGY'] == 'Demand') & (demand['YEAR'] == year)]
@@ -307,7 +309,7 @@ def plot_average_generation_by_timeslice(tall_results_dfs, paths_dict):
         df =  generation.copy()
         df = df[(df['YEAR'] == year) & (df['TECHNOLOGY'] != 'Demand')]
 
-        fig = px.bar(df, x="TIMESLICE", y="VALUE", color='TECHNOLOGY', title=title,color_discrete_map=color_dict, barmode='stack', category_orders={"TIMESLICE": order_nocapacity})
+        fig = px.bar(df, x="TIMESLICE", y="VALUE", color='TECHNOLOGY', title=title,color_discrete_map=color_dict,  barmode='relative', category_orders={"TIMESLICE": order_nocapacity})
 
         demand = generation.copy()
         demand = demand[(demand['TECHNOLOGY'] == 'Demand') & (demand['YEAR'] == year)]
