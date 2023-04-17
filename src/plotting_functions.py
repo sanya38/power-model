@@ -69,8 +69,8 @@ def extract_storage_charge_and_discharge(tall_results_dfs):
     storage_charge = tall_results_dfs['UseByTechnology'].copy()
 
     #MAP TECHNOLOGY TO READABLE NAMES
-    storage_charge['TECHNOLOGY'] = storage_charge['TECHNOLOGY'].apply(lambda x: extract_readable_name_from_mapping(x, powerplant_mapping,'extract_storage_charge_and_discharge', ignore_missing_mappings=True))
-    storage_discharge['TECHNOLOGY'] = storage_discharge['TECHNOLOGY'].apply(lambda x: extract_readable_name_from_mapping(x, powerplant_mapping,'extract_storage_charge_and_discharge', ignore_missing_mappings=True))
+    storage_charge['TECHNOLOGY'] = storage_charge['TECHNOLOGY'].apply(lambda x: extract_readable_name_from_mapping(x, powerplant_mapping,'extract_storage_charge_and_discharge', ignore_missing_mappings=True, print_warning_messages=False))
+    storage_discharge['TECHNOLOGY'] = storage_discharge['TECHNOLOGY'].apply(lambda x: extract_readable_name_from_mapping(x, powerplant_mapping,'extract_storage_charge_and_discharge', ignore_missing_mappings=True, print_warning_messages=False))
     #filter for only storage
     storage_charge = storage_charge[storage_charge['TECHNOLOGY'] == 'Storage']
     storage_discharge = storage_discharge[storage_discharge['TECHNOLOGY'] == 'Storage']
@@ -433,11 +433,12 @@ def drop_categories_not_in_mapping(df, mapping, column='TECHNOLOGY'):
         warnings.warn(f'Filtering data in {column} caused the dataframe to become empty')
     return df
 
-def extract_readable_name_from_mapping(long_name,mapping, function_name, ignore_missing_mappings=False):
+def extract_readable_name_from_mapping(long_name,mapping, function_name, ignore_missing_mappings=False, print_warning_messages=True):
     """Use the mappings of what categories we expect in the power model and map them to readable names"""
     if long_name not in mapping.keys():
         if ignore_missing_mappings:
-            logging.warning(f"Category {long_name} is not in the expected set of long_names in the mapping. This occured during extract_readable_name_from_mapping(), for the function {function_name}")
+            if print_warning_messages:
+                logging.warning(f"Category {long_name} is not in the expected set of long_names in the mapping. This occured during extract_readable_name_from_mapping(), for the function {function_name}")
             return long_name
         else:
             logging.error(f"Category {long_name} is not in the expected set of long_names in the mapping. This occured during extract_readable_name_from_mapping(), for the function {function_name}")
